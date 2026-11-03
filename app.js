@@ -82,7 +82,7 @@ function renderTodo(todo) {
   title.className = "title";
   title.textContent = todo.title;
   title.title = "Double-click to edit";
-  title.addEventListener("dblclick", () => startEditing(li, title, todo));
+  title.addEventListener("dblclick", () => startEditing(title, todo));
 
   const attribution = document.createElement("span");
   attribution.className = "attribution";
@@ -105,7 +105,7 @@ function renderTodo(todo) {
   return li;
 }
 
-function startEditing(li, title, todo) {
+function startEditing(title, todo) {
   const edit = document.createElement("input");
   edit.className = "edit";
   edit.value = todo.title;
@@ -133,7 +133,7 @@ function startEditing(li, title, todo) {
   });
   edit.addEventListener("blur", () => finish(true));
 
-  li.replaceChild(edit, title);
+  title.replaceWith(edit);
   edit.focus();
   edit.select();
 }
