@@ -15,7 +15,8 @@ python3 -m http.server 8000
 ## Features
 
 - Add, complete, and delete todos
-- Double-click a todo to edit it (Enter to save, Esc to cancel, empty to delete)
+- Tap ✏️ (or double-click the text) to change a todo (Enter to save, Esc to cancel, empty to delete); tap 🗑️ to delete it
+- Give a todo an optional date with 📅; late, today, and this-week todos are highlighted. Tap the date to change or clear it
 - Set an editor name to attribute each todo's creation and most recent change
 - Filter by All / Active / Completed
 - Clear all completed todos at once
