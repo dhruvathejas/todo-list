@@ -4,9 +4,15 @@ const EDITOR_KEY = "todo-list.editor";
 const form = document.getElementById("new-todo-form");
 const input = document.getElementById("new-todo");
 const editorName = document.getElementById("editor-name");
+const editorAvatar = document.getElementById("editor-avatar");
 const list = document.getElementById("todo-list");
 const footer = document.getElementById("footer");
 const count = document.getElementById("count");
+const emptyState = document.getElementById("empty-state");
+const emptyTitle = document.getElementById("empty-title");
+const emptyMessage = document.getElementById("empty-message");
+const progressLabel = document.getElementById("progress-label");
+const progressBar = document.getElementById("progress-bar");
 const clearCompleted = document.getElementById("clear-completed");
 const filterButtons = document.querySelectorAll("[data-filter]");
 
@@ -54,12 +60,24 @@ function visibleTodos() {
 }
 
 function render() {
-  list.replaceChildren(...visibleTodos().map(renderTodo));
+  const visible = visibleTodos();
+  list.replaceChildren(...visible.map(renderTodo));
 
   const remaining = todos.filter((t) => !t.completed).length;
+  const completed = todos.length - remaining;
   count.textContent = `${remaining} item${remaining === 1 ? "" : "s"} left`;
   footer.hidden = todos.length === 0;
   clearCompleted.hidden = remaining === todos.length;
+  emptyState.hidden = visible.length > 0;
+  emptyTitle.textContent = todos.length === 0
+    ? "Nothing on your list yet"
+    : filter === "active" ? "All caught up!" : "No completed tasks yet";
+  emptyMessage.textContent = todos.length === 0
+    ? "Add a task above and take it one step at a time."
+    : filter === "active" ? "You’ve made it through everything on your list."
+      : "Finish a task and it will find its way here.";
+  progressLabel.textContent = `${completed} of ${todos.length} done`;
+  progressBar.style.width = `${todos.length ? (completed / todos.length) * 100 : 0}%`;
 
   filterButtons.forEach((b) => b.classList.toggle("selected", b.dataset.filter === filter));
 }
@@ -93,7 +111,7 @@ function renderTodo(todo) {
   const del = document.createElement("button");
   del.type = "button";
   del.className = "delete";
-  del.textContent = "✕";
+  del.textContent = "×";
   del.setAttribute("aria-label", `Delete "${todo.title}"`);
   del.addEventListener("click", () => update(todos.filter((t) => t.id !== todo.id)));
 
@@ -138,7 +156,7 @@ function startEditing(title, todo) {
   edit.select();
 }
 
-editorName.value = loadEditor();
+editorName.value = loadEditor() || "You";
 editorName.addEventListener("change", () => {
   try {
     localStorage.setItem(EDITOR_KEY, editorName.value.trim());

@@ -8,31 +8,59 @@
 </head>
 <body>
   <main class="app">
-    <header>
-      <h1>todo-list</h1>
-      <p class="tagline">Something that remembers, what you need to remember.</p>
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">✓</div>
+        <span class="brand-name">little list</span>
+        <span class="storage-note"><span class="status-dot"></span>Saved on this device</span>
+      </div>
+      <p class="eyebrow">YOUR PERSONAL SPACE</p>
+      <h1>Get the little things done.</h1>
+      <p class="tagline">A clear mind starts with a simple list.</p>
       <label class="identity">
-        <span>Editing as</span>
+        <span class="identity-icon" aria-hidden="true">◉</span>
+        <span>Tracking as</span>
         <input id="editor-name" type="text" maxlength="48" autocomplete="name" aria-label="Your name">
       </label>
     </header>
 
-    <form id="new-todo-form" autocomplete="off">
-      <input id="new-todo" type="text" placeholder="What needs to be done?" aria-label="New todo" required>
-      <button type="submit">Add</button>
-    </form>
+    <section class="task-panel" aria-label="Todo list">
+      <form id="new-todo-form" autocomplete="off">
+        <span class="input-icon" aria-hidden="true">＋</span>
+        <input id="new-todo" type="text" placeholder="Add a task to your list..." aria-label="New todo" required>
+        <button type="submit">Add task <span aria-hidden="true">→</span></button>
+      </form>
 
-    <ul id="todo-list" aria-live="polite"></ul>
+      <div class="section-heading">
+        <div>
+          <h2>Your tasks</h2>
+          <p>A little progress is still progress.</p>
+        </div>
+        <div class="progress-summary">
+          <span id="progress-label">0 of 0 done</span>
+          <div class="progress-track" aria-hidden="true"><span id="progress-bar"></span></div>
+        </div>
+      </div>
 
-    <footer id="footer" hidden>
-      <span id="count"></span>
-      <nav class="filters" aria-label="Filter todos">
-        <button type="button" data-filter="all" class="selected">All</button>
-        <button type="button" data-filter="active">Active</button>
-        <button type="button" data-filter="completed">Completed</button>
-      </nav>
-      <button type="button" id="clear-completed">Clear completed</button>
-    </footer>
+      <div id="empty-state" class="empty-state" hidden>
+        <div class="empty-icon" aria-hidden="true">✓</div>
+        <p id="empty-title" class="empty-title">Nothing on your list yet</p>
+        <p id="empty-message">Add a task above and take it one step at a time.</p>
+      </div>
+
+      <ul id="todo-list" aria-live="polite"></ul>
+
+      <footer id="footer" hidden>
+        <span id="count"></span>
+        <nav class="filters" aria-label="Filter todos">
+          <button type="button" data-filter="all" class="selected">All</button>
+          <button type="button" data-filter="active">Active</button>
+          <button type="button" data-filter="completed">Completed</button>
+        </nav>
+        <button type="button" id="clear-completed">Clear completed</button>
+      </footer>
+    </section>
+    <p class="privacy-note">Your list stays private and is saved in this browser.</p>
   </main>
 
   <script src="app.js"></script>
