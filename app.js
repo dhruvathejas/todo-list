@@ -1,7 +1,9 @@
 const STORAGE_KEY = "todo-list.todos";
+const EDITOR_KEY = "todo-list.editor";
 
 const form = document.getElementById("new-todo-form");
 const input = document.getElementById("new-todo");
+const editorName = document.getElementById("editor-name");
 const list = document.getElementById("todo-list");
 const footer = document.getElementById("footer");
 const count = document.getElementById("count");
@@ -11,12 +13,24 @@ const filterButtons = document.querySelectorAll("[data-filter]");
 let todos = load();
 let filter = "all";
 
+function loadEditor() {
+  try {
+    return localStorage.getItem(EDITOR_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
 function load() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch {
     return [];
   }
+}
+
+function currentEditor() {
+  return editorName.value.trim() || "You";
 }
 
 function save() {
@@ -59,7 +73,9 @@ function renderTodo(todo) {
   checkbox.checked = todo.completed;
   checkbox.setAttribute("aria-label", `Mark "${todo.title}" as ${todo.completed ? "active" : "completed"}`);
   checkbox.addEventListener("change", () =>
-    update(todos.map((t) => (t.id === todo.id ? { ...t, completed: !t.completed } : t)))
+    update(todos.map((t) => (t.id === todo.id
+      ? { ...t, completed: checkbox.checked, updatedBy: currentEditor() }
+      : t)))
   );
 
   const title = document.createElement("span");
@@ -68,6 +84,12 @@ function renderTodo(todo) {
   title.title = "Double-click to edit";
   title.addEventListener("dblclick", () => startEditing(li, title, todo));
 
+  const attribution = document.createElement("span");
+  attribution.className = "attribution";
+  const creator = todo.createdBy || "Unknown";
+  const lastEditor = todo.updatedBy || creator;
+  attribution.textContent = `Added by ${creator} · Changed by ${lastEditor}`;
+
   const del = document.createElement("button");
   del.type = "button";
   del.className = "delete";
@@ -75,7 +97,11 @@ function renderTodo(todo) {
   del.setAttribute("aria-label", `Delete "${todo.title}"`);
   del.addEventListener("click", () => update(todos.filter((t) => t.id !== todo.id)));
 
-  li.append(checkbox, title, del);
+  const content = document.createElement("div");
+  content.className = "todo-content";
+  content.append(title, attribution);
+
+  li.append(checkbox, content, del);
   return li;
 }
 
@@ -93,7 +119,9 @@ function startEditing(li, title, todo) {
     if (!commit) {
       render();
     } else if (value) {
-      update(todos.map((t) => (t.id === todo.id ? { ...t, title: value } : t)));
+      update(todos.map((t) => (t.id === todo.id
+        ? { ...t, title: value, updatedBy: currentEditor() }
+        : t)));
     } else {
       update(todos.filter((t) => t.id !== todo.id));
     }
@@ -110,11 +138,28 @@ function startEditing(li, title, todo) {
   edit.select();
 }
 
+editorName.value = loadEditor();
+editorName.addEventListener("change", () => {
+  try {
+    localStorage.setItem(EDITOR_KEY, editorName.value.trim());
+  } catch {
+    // Keep the selected identity for this page even if storage is unavailable.
+  }
+  render();
+});
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const value = input.value.trim();
   if (!value) return;
-  update([...todos, { id: crypto.randomUUID(), title: value, completed: false }]);
+  const actor = currentEditor();
+  update([...todos, {
+    id: crypto.randomUUID(),
+    title: value,
+    completed: false,
+    createdBy: actor,
+    updatedBy: actor,
+  }]);
   input.value = "";
 });
 
