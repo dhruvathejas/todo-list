@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo List</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>todo-list</h1>
+      <p class="tagline">Something that remembers, what you need to remember.</p>
+    </header>
+
+    <form id="new-todo-form" autocomplete="off">
+      <input id="new-todo" type="text" placeholder="What needs to be done?" aria-label="New todo" required>
+      <button type="submit">Add</button>
+    </form>
+
+    <ul id="todo-list" aria-live="polite"></ul>
+
+    <footer id="footer" hidden>
+      <span id="count"></span>
+      <nav class="filters" aria-label="Filter todos">
+        <button type="button" data-filter="all" class="selected">All</button>
+        <button type="button" data-filter="active">Active</button>
+        <button type="button" data-filter="completed">Completed</button>
+      </nav>
+      <button type="button" id="clear-completed">Clear completed</button>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
